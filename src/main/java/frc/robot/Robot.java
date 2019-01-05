@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.*;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,13 +74,14 @@ public class Robot extends IterativeRobot {
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
       case kCustomAuto:
+        
         // Put custom auto code here
         break;
       case kDefaultAuto:
       default:
         // Put default auto code here
         break;
-    }
+    }////////////
   }
 
   /**
