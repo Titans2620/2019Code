@@ -53,10 +53,11 @@ public class Robot extends TimedRobot {
     /***********************************************************
                          Limit Switches
     ************************************************************/
-    DigitalInput rSlideSwitch = new DigitalInput(0);
-    DigitalInput lSlideSwitch = new DigitalInput(1);
+    DigitalInput rSlideSensor = new DigitalInput(0);
+    DigitalInput lSlideSensor = new DigitalInput(1);
     DigitalInput bLiftSwitch = new DigitalInput(2);
     DigitalInput tLiftSwitch = new DigitalInput(3);
+    DigitalInput proxySensor = new DigitalInput(4);
 
     /*************************************************************
                             Servo Motors
@@ -83,6 +84,9 @@ public class Robot extends TimedRobot {
     static double threshold = 10;
     int slideTarget = 0;
     int colorThreshhold = 20;
+    double encoderCount;
+    double encoderDegree;
+    boolean lowGear = false;
 
  
   
@@ -173,7 +177,14 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     SmartDashboard.putNumber("rPOV", rPOV);
     int colorTotal = colorSensor.red + colorSensor.green + colorSensor.blue;
 
-    if(rightFace) { //servo code changes servo position based on boolean input
+    if(trigger){
+      lowGear = true;
+    } else{
+      lowGear = false;
+    }
+    
+    
+    if(!lowGear) { //servo code changes servo position based on boolean input
       rDriveServo.setAngle(120);
       lDriveServo.setAngle(30);
     } else {
@@ -201,57 +212,18 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     }*/
 
     /*
-        left limit Switch - lSlideSwitch - dio(0)
-        Right Limit Switch - rSlideSwitch - dio(1)
-        Get if color sensor is reading above a value - checkColor(threshold) - recommended 10
-            *Returns true if threshold is met
-        slide motor - crossSlide (talon5)
-        rPOV(90) - moves slide to left
-        rPOV(270) - moves slide to right
-        rightFace - moves lift to the right until color sensor is hit/ right limit is hit
-        leftFace - moves lift to the left until color sensor is hit/ left limit is hit
-          *at any point manual movement should override automatic movement
-
-        *Assume Positive is right/ Negative is left, we will invert if necessary
     
-
     *********************************************************
       CROSS SLIDE CODE
     ********************************************************/
 
-      //put slide code here
-      
-
- 
-      /*Two Motors used for lift facing each other, one will be inverted
-        Left Lift - lLift - talon(6)
-        Right Lift - rLift - talon(7)
-        bottom Limit Switch - bLiftSwitch - DIO(3)
-        top Limit Switch - tLiftSwitch - DIO(4)
-        rPOV(0) - ascends lift
-        rPOV(180) - descends lift
-
-
-    *********************************************************
-    LIFT CODE
-    *********************************************************/
-
-    //Put Lift Code here
-    
-
-
-    //left 
-
-
-    //right
-
-    if (rightFace && !rSlideSwitch.get()) {
+    if (rightFace && !rSlideSensor.get()) {
       slideTarget = 1;
     } else {
-       if (leftFace && !lSlideSwitch.get()) {
+       if (leftFace && !lSlideSensor.get()) {
          slideTarget = -1;
       } else {
-          if ((rSlideSwitch.get() && slideTarget == 1) || (lSlideSwitch.get() && slideTarget == -1) || colorTotal > colorThreshhold || right.getPOV() == 90 || right.getPOV() == 270) {
+          if ((rSlideSensor.get() && slideTarget == 1) || (lSlideSensor.get() && slideTarget == -1) || colorTotal > colorThreshhold || right.getPOV() == 90 || right.getPOV() == 270) {
             slideTarget = 0;
           }
         }
@@ -259,43 +231,52 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
 
 
     if(right.getPOV() == 90 || slideTarget == 1 || right.getPOV() == 45 || right.getPOV() == 135) {
-      if(!rSlideSwitch.get()){
-        crossSlide.set(1);
-      }}
-      else{
+        if(!rSlideSensor.get()){
+            crossSlide.set(1);
+        }
+    }
+    else{
         if(right.getPOV() == 270 || slideTarget == -1 || right.getPOV() == 315 || right.getPOV() == 225){
-          if(!lSlideSwitch.get()){
-            crossSlide.set(-1);
-
-
-          }}
-          else{
-            crossSlide.set(0.0);
-          
+            if(!lSlideSensor.get()){
+              crossSlide.set(-1);
+            }
         }
-      }
-//Elevator Programming  
-      if(right.getPOV() == 0){
-       if(!tLiftSwitch.get()){
-         lLift.set(0.5);
-         rLift.set(0.5);
-        }}
         else{
-                    if(right.getPOV() == 180){
-            if(!bLiftSwitch.get()){
-              lLift.set(-0.5);
-              rLift.set(-0.5);
-            }}
-           else{
-              lLift.set(0.0);
-              rLift.set(0.0);
-            
-          }
+            crossSlide.set(0.0); 
         }
+    }
+   /**********************************************************
+                            LIFT CODE
+    *********************************************************/
 
-        
+    if(right.getPOV() == 0){
+        if(!tLiftSwitch.get()){
+            lLift.set(0.5);
+            rLift.set(0.5);
+        }
+    }
+      else{
+          if(right.getPOV() == 180){
+              if(!bLiftSwitch.get()){
+                  lLift.set(-0.5);
+                  rLift.set(-0.5);
+              }
+          }
+          else{
+             lLift.set(0.0);
+             rLift.set(0.0);
+           
+         }
+       }
+      /**************************************************************
+                Encoder Code
+      ***************************************************************/
 
+      encoderCount = armEnc.getRaw();
+      
 
+    //4063counts per revolution/18.5 gear down = 1 revolution
+    //208.79 counts = 1 degree
 
     // OUTPUTS TO SHUFFLEBOARD/SMARTDASHBOARD, USE FOR TRACKING VALUES
     SmartDashboard.putNumber("JoyStickXVal", right.getX());
@@ -304,16 +285,13 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     SmartDashboard.putNumber("Left Servo", rDriveServo.getAngle());
     SmartDashboard.putNumber("Right Servo", lDriveServo.getAngle());
     SmartDashboard.putNumber("Slide", crossSlide.get());
-    SmartDashboard.putBoolean("left", lSlideSwitch.get());
-    SmartDashboard.putBoolean("right", rSlideSwitch.get());
+    SmartDashboard.putBoolean("left", lSlideSensor.get());
+    SmartDashboard.putBoolean("right", rSlideSensor.get());
     SmartDashboard.putNumber("target", slideTarget);
     SmartDashboard.putNumber("color total", colorTotal);
-    SmartDashboard.putNumber("Arm Encoder", armEnc.get());
+    SmartDashboard.putNumber("Arm Encoder", encoderCount);
+    SmartDashboard.putBoolean("Proximity Sensor", proxySensor.get());
 
-
-
-  
-    
     colorSensor.read();
     SmartDashboard.putNumber("test", colorSensor.status());
     SmartDashboard.putNumber("red", colorSensor.red);
