@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
     WPI_TalonSRX rIntake = new WPI_TalonSRX(9);
     WPI_TalonSRX rearClimb = new WPI_TalonSRX(10);
     WPI_TalonSRX frontClimb = new WPI_TalonSRX(11);
-
+    
     //WPI_VictorSPX victor1 = new WPI_VictorSPX(12);
     //WPI_VictorSPX victor2 = new WPI_VictorSPX(13);
 
@@ -268,6 +268,12 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
            
          }
        }
+       //run talon 10 until no buttons are pressed or a limit switch(DIO4)is pressed
+       //two buttons are used R3 and L3, R3 moves it forward, L3 moves it backward
+      
+    
+  
+       
       /**************************************************************
                 Encoder Code
       ***************************************************************/
@@ -291,6 +297,7 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     SmartDashboard.putNumber("color total", colorTotal);
     SmartDashboard.putNumber("Arm Encoder", encoderCount);
     SmartDashboard.putBoolean("Proximity Sensor", proxySensor.get());
+    SmartDashboard.putBoolean("Low Gear", lowGear);
 
     colorSensor.read();
     SmartDashboard.putNumber("test", colorSensor.status());
