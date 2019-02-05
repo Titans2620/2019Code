@@ -213,7 +213,35 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     ********************************************************/
 
       //put slide code here
-      
+      if (rightFace && !rSlideSwitch.get()) {
+        slideTarget = 1;
+      } else {
+         if (leftFace && !lSlideSwitch.get()) {
+           slideTarget = -1;
+        } else {
+            if ((rSlideSwitch.get() && slideTarget == 1) || (lSlideSwitch.get() && slideTarget == -1) || colorTotal > colorThreshhold || right.getPOV() == 90 || right.getPOV() == 270) {
+              slideTarget = 0;
+            }
+          }
+       }
+  
+  
+      if(right.getPOV() == 90 || slideTarget == 1 || right.getPOV() == 45 || right.getPOV() == 135) {
+        if(!rSlideSwitch.get()){
+          crossSlide.set(0.1);
+        }}
+        else{
+          if(right.getPOV() == 270 || slideTarget == -1 || right.getPOV() == 315 || right.getPOV() == 225){
+            if(!lSlideSwitch.get()){
+              crossSlide.set(-0.1);
+  
+  
+            }}
+            else{
+              crossSlide.set(0.0);
+            
+          }
+        }
 
  
       /*Two Motors used for lift facing each other, one will be inverted
@@ -232,41 +260,6 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     //Put Lift Code here
     
 
-
-    //left 
-
-
-    //right
-
-    if (rightFace && !rSlideSwitch.get()) {
-      slideTarget = 1;
-    } else {
-       if (leftFace && !lSlideSwitch.get()) {
-         slideTarget = -1;
-      } else {
-          if ((rSlideSwitch.get() && slideTarget == 1) || (lSlideSwitch.get() && slideTarget == -1) || colorTotal > colorThreshhold || right.getPOV() == 90 || right.getPOV() == 270) {
-            slideTarget = 0;
-          }
-        }
-     }
-
-
-    if(right.getPOV() == 90 || slideTarget == 1 || right.getPOV() == 45 || right.getPOV() == 135) {
-      if(!rSlideSwitch.get()){
-        crossSlide.set(0.1);
-      }}
-      else{
-        if(right.getPOV() == 270 || slideTarget == -1 || right.getPOV() == 315 || right.getPOV() == 225){
-          if(!lSlideSwitch.get()){
-            crossSlide.set(-0.1);
-
-
-          }}
-          else{
-            crossSlide.set(0.0);
-          
-        }
-      }
 //Elevator Programming  
       if(right.getPOV() == 0){
        if(!tLiftSwitch.get()){
@@ -285,6 +278,23 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
             
           }
         }
+
+    /**********************************************************
+                      INTAKE
+     ********************************************************/
+
+    if(trigger){
+        lIntake.set(1);
+        rintake.set(-1);
+      } else{
+          if(bottomFace){
+            lIntake.set(-1);
+            rIntake.set(1);
+          } else{
+              lIntake.set(0);
+              rintake.set(0);
+            }
+      }
 
     // OUTPUTS TO SHUFFLEBOARD/SMARTDASHBOARD, USE FOR TRACKING VALUES
     SmartDashboard.putNumber("JoyStickXVal", right.getX());
