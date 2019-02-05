@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.ColorSensor;
 import jdk.jfr.Threshold;
 
@@ -43,12 +42,7 @@ public class Robot extends TimedRobot {
     //Spark spark0 = new Spark(0);
     //Spark spark1 = new Spark(1);
 
-
-
-    Encoder armEnc = new Encoder(6,7, false, Encoder.EncodingType.k4X);
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
-    
-    
 
     /***********************************************************
                          Limit Switches
@@ -62,7 +56,7 @@ public class Robot extends TimedRobot {
     /*************************************************************
                             Servo Motors
     ***************************************************************/
-    Servo rDriveServo = new Servo(8);
+    Servo rDriveServo = new Servo(7);
     Servo lDriveServo = new Servo(9);
 
   
@@ -102,7 +96,7 @@ public class Robot extends TimedRobot {
         //m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         //m_chooser.addOption("My Auto", kCustomAuto);
         //SmartDashboard.putData("Auto choices", m_chooser);
-        armEnc.reset();
+    
         CameraServer.getInstance().startAutomaticCapture();
     }
  
