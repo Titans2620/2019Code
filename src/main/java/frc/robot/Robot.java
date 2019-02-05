@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.ColorSensor;
 import jdk.jfr.Threshold;
 
@@ -35,13 +36,19 @@ public class Robot extends TimedRobot {
     WPI_TalonSRX rIntake = new WPI_TalonSRX(9);
     WPI_TalonSRX rearClimb = new WPI_TalonSRX(10);
     WPI_TalonSRX frontClimb = new WPI_TalonSRX(11);
+
     //WPI_VictorSPX victor1 = new WPI_VictorSPX(12);
     //WPI_VictorSPX victor2 = new WPI_VictorSPX(13);
 
     //Spark spark0 = new Spark(0);
     //Spark spark1 = new Spark(1);
 
+
+
+    Encoder armEnc = new Encoder(6,7, false, Encoder.EncodingType.k4X);
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
+    
+    
 
     /***********************************************************
                          Limit Switches
@@ -54,7 +61,7 @@ public class Robot extends TimedRobot {
     /*************************************************************
                             Servo Motors
     ***************************************************************/
-    Servo rDriveServo = new Servo(7);
+    Servo rDriveServo = new Servo(8);
     Servo lDriveServo = new Servo(9);
 
   
@@ -91,7 +98,7 @@ public class Robot extends TimedRobot {
         //m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         //m_chooser.addOption("My Auto", kCustomAuto);
         //SmartDashboard.putData("Auto choices", m_chooser);
-    
+        armEnc.reset();
         CameraServer.getInstance().startAutomaticCapture();
     }
  
@@ -260,6 +267,44 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     //Put Lift Code here
     
 
+<<<<<<< HEAD
+=======
+
+    //left 
+
+
+    //right
+
+    if (rightFace && !rSlideSwitch.get()) {
+      slideTarget = 1;
+    } else {
+       if (leftFace && !lSlideSwitch.get()) {
+         slideTarget = -1;
+      } else {
+          if ((rSlideSwitch.get() && slideTarget == 1) || (lSlideSwitch.get() && slideTarget == -1) || colorTotal > colorThreshhold || right.getPOV() == 90 || right.getPOV() == 270) {
+            slideTarget = 0;
+          }
+        }
+     }
+
+
+    if(right.getPOV() == 90 || slideTarget == 1 || right.getPOV() == 45 || right.getPOV() == 135) {
+      if(!rSlideSwitch.get()){
+        crossSlide.set(1);
+      }}
+      else{
+        if(right.getPOV() == 270 || slideTarget == -1 || right.getPOV() == 315 || right.getPOV() == 225){
+          if(!lSlideSwitch.get()){
+            crossSlide.set(-1);
+
+
+          }}
+          else{
+            crossSlide.set(0.0);
+          
+        }
+      }
+>>>>>>> eac6464c29e74cb509ee7d6e9a798295f4b31117
 //Elevator Programming  
       if(right.getPOV() == 0){
        if(!tLiftSwitch.get()){
@@ -279,6 +324,7 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
           }
         }
 
+<<<<<<< HEAD
     /**********************************************************
                       INTAKE
      ********************************************************/
@@ -295,6 +341,11 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
               rintake.set(0);
             }
       }
+=======
+        
+
+
+>>>>>>> eac6464c29e74cb509ee7d6e9a798295f4b31117
 
     // OUTPUTS TO SHUFFLEBOARD/SMARTDASHBOARD, USE FOR TRACKING VALUES
     SmartDashboard.putNumber("JoyStickXVal", right.getX());
@@ -307,6 +358,7 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
     SmartDashboard.putBoolean("right", rSlideSwitch.get());
     SmartDashboard.putNumber("target", slideTarget);
     SmartDashboard.putNumber("color total", colorTotal);
+    SmartDashboard.putNumber("Arm Encoder", armEnc.get());
 
 
 
