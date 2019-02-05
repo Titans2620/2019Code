@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.ColorSensor;
 import jdk.jfr.Threshold;
 
@@ -43,12 +42,7 @@ public class Robot extends TimedRobot {
     //Spark spark0 = new Spark(0);
     //Spark spark1 = new Spark(1);
 
-
-
-    Encoder armEnc = new Encoder(6,7, false, Encoder.EncodingType.k4X);
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
-    
-    
 
     /***********************************************************
                          Limit Switches
@@ -62,7 +56,7 @@ public class Robot extends TimedRobot {
     /*************************************************************
                             Servo Motors
     ***************************************************************/
-    Servo rDriveServo = new Servo(8);
+    Servo rDriveServo = new Servo(7);
     Servo lDriveServo = new Servo(9);
 
   
@@ -102,7 +96,7 @@ public class Robot extends TimedRobot {
         //m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         //m_chooser.addOption("My Auto", kCustomAuto);
         //SmartDashboard.putData("Auto choices", m_chooser);
-        armEnc.reset();
+    
         CameraServer.getInstance().startAutomaticCapture();
     }
  
@@ -217,67 +211,7 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
       CROSS SLIDE CODE
     ********************************************************/
 
-<<<<<<< HEAD
     if (rightFace && !rSlideSensor.get()) {
-=======
-      //put slide code here
-      if (rightFace && !rSlideSwitch.get()) {
-        slideTarget = 1;
-      } else {
-         if (leftFace && !lSlideSwitch.get()) {
-           slideTarget = -1;
-        } else {
-            if ((rSlideSwitch.get() && slideTarget == 1) || (lSlideSwitch.get() && slideTarget == -1) || colorTotal > colorThreshhold || right.getPOV() == 90 || right.getPOV() == 270) {
-              slideTarget = 0;
-            }
-          }
-       }
-  
-  
-      if(right.getPOV() == 90 || slideTarget == 1 || right.getPOV() == 45 || right.getPOV() == 135) {
-        if(!rSlideSwitch.get()){
-          crossSlide.set(0.1);
-        }}
-        else{
-          if(right.getPOV() == 270 || slideTarget == -1 || right.getPOV() == 315 || right.getPOV() == 225){
-            if(!lSlideSwitch.get()){
-              crossSlide.set(-0.1);
-  
-  
-            }}
-            else{
-              crossSlide.set(0.0);
-            
-          }
-        }
-
- 
-      /*Two Motors used for lift facing each other, one will be inverted
-        Left Lift - lLift - talon(6)
-        Right Lift - rLift - talon(7)
-        bottom Limit Switch - bLiftSwitch - DIO(3)
-        top Limit Switch - tLiftSwitch - DIO(4)
-        rPOV(0) - ascends lift
-        rPOV(180) - descends lift
-
-
-    *********************************************************
-    LIFT CODE
-    *********************************************************/
-
-    //Put Lift Code here
-    
-
-<<<<<<< HEAD
-=======
-
-    //left 
-
-
-    //right
-
-    if (rightFace && !rSlideSwitch.get()) {
->>>>>>> 0d3ea8f2b74733cb8f35161eaf31f6d822edc795
       slideTarget = 1;
     } else {
        if (leftFace && !lSlideSensor.get()) {
@@ -301,17 +235,6 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
               crossSlide.set(-1);
             }
         }
-<<<<<<< HEAD
-=======
-      }
->>>>>>> eac6464c29e74cb509ee7d6e9a798295f4b31117
-//Elevator Programming  
-      if(right.getPOV() == 0){
-       if(!tLiftSwitch.get()){
-         lLift.set(0.5);
-         rLift.set(0.5);
-        }}
->>>>>>> 0d3ea8f2b74733cb8f35161eaf31f6d822edc795
         else{
             crossSlide.set(0.0); 
         }
@@ -320,7 +243,6 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
                             LIFT CODE
     *********************************************************/
 
-<<<<<<< HEAD
     if(right.getPOV() == 0){
         if(!tLiftSwitch.get()){
             lLift.set(0.5);
@@ -349,37 +271,12 @@ TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELEOP TELOP
       /**************************************************************
                 Encoder Code
       ***************************************************************/
-=======
-<<<<<<< HEAD
-    /**********************************************************
-                      INTAKE
-     ********************************************************/
-
-    if(trigger){
-        lIntake.set(1);
-        rintake.set(-1);
-      } else{
-          if(bottomFace){
-            lIntake.set(-1);
-            rIntake.set(1);
-          } else{
-              lIntake.set(0);
-              rintake.set(0);
-            }
-      }
-=======
-        
->>>>>>> 0d3ea8f2b74733cb8f35161eaf31f6d822edc795
 
       encoderCount = armEnc.getRaw();
       
 
-<<<<<<< HEAD
     //4063counts per revolution/18.5 gear down = 1 revolution
     //208.79 counts = 1 degree
-=======
->>>>>>> eac6464c29e74cb509ee7d6e9a798295f4b31117
->>>>>>> 0d3ea8f2b74733cb8f35161eaf31f6d822edc795
 
     // OUTPUTS TO SHUFFLEBOARD/SMARTDASHBOARD, USE FOR TRACKING VALUES
     SmartDashboard.putNumber("JoyStickXVal", right.getX());
