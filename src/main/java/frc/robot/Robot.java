@@ -61,12 +61,7 @@ public class Robot extends TimedRobot {
     DigitalInput ballSwitch = new DigitalInput(8);
     
 
-    /*************************************************************
-                            Servo Motors
-    ***************************************************************/
-    Servo rDriveServo = new Servo(8);
-    Servo lDriveServo = new Servo(9);
-
+    
   
     /***********************************************************
                             Drive Code
@@ -216,13 +211,8 @@ public class Robot extends TimedRobot {
         }
         
         
-        if(!highGear) { //servo code changes servo position based on boolean input
-            rDriveServo.setAngle(120);
-            lDriveServo.setAngle(30);
-        } else {
-            rDriveServo.setAngle(30);
-            lDriveServo.setAngle(100);
-        }
+       
+        
     
         /*********************************************************
          CROSS SLIDE CODE
