@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
                         Motor Controllers
     *************************************************************/
     WPI_TalonSRX bottomRightDrive = new WPI_TalonSRX(1);
-    WPI_TalonSRX bottomLeftDrive = new WPI_TalonSRX(2);
-    WPI_TalonSRX topRightDrive = new WPI_TalonSRX(3);
+    WPI_VictorSPX bottomLeftDrive = new WPI_VictorSPX(2);
+    WPI_VictorSPX topRightDrive = new WPI_VictorSPX(3);
     WPI_TalonSRX topLeftDrive = new WPI_TalonSRX(4);
     WPI_TalonSRX lLift = new WPI_TalonSRX(5);
     WPI_TalonSRX crossSlide = new WPI_TalonSRX(6);
@@ -40,8 +40,12 @@ public class Robot extends TimedRobot {
     WPI_TalonSRX rearClimb = new WPI_TalonSRX(11);
     WPI_TalonSRX intakeArm = new WPI_TalonSRX(14);
 
-    WPI_VictorSPX rRearArmDrive = new WPI_VictorSPX(12);
-    WPI_VictorSPX lRearArmDrive = new WPI_VictorSPX(13);
+    Spark lLift2 = new Spark(5);
+    
+    Spark rLift2 = new Spark(4);
+
+    WPI_TalonSRX rRearArmDrive = new WPI_TalonSRX(12);
+    WPI_TalonSRX lRearArmDrive = new WPI_TalonSRX(13);
 
     // Spark rLiftTest = new Spark(0);
     // Spark lLiftTest = new Spark(1);
@@ -356,13 +360,19 @@ public class Robot extends TimedRobot {
         if(right.getPOV() == 0) {
             lLift.set(LIFT_POWER);
             rLift.set(LIFT_POWER);
+            lLift2.set(LIFT_POWER);
+            rLift2.set(LIFT_POWER);
         } else {
             if(right.getPOV() == 180) {
                 lLift.set(-LIFT_POWER);
                 rLift.set(-LIFT_POWER);
+                lLift2.set(-LIFT_POWER);
+                rLift2.set(-LIFT_POWER);
             } else {
                 lLift.set(0.0);
                 rLift.set(0.0);
+                lLift2.set(0.0);
+                rLift2.set(0.0);
             }
         }
 
@@ -519,8 +529,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("JoyStickXVal", right.getX());
         SmartDashboard.putNumber("JoyStickYVal", right.getY());
         SmartDashboard.putBoolean("TestShoot", right.getRawButton(1));
-        SmartDashboard.putNumber("Left Servo", rDriveServo.getAngle());
-        SmartDashboard.putNumber("Right Servo", lDriveServo.getAngle());
+        //SmartDashboard.putNumber("Left Servo", rDriveServo.getAngle());
+        //SmartDashboard.putNumber("Right Servo", lDriveServo.getAngle());
         SmartDashboard.putNumber("Slide", crossSlide.get());
         SmartDashboard.putBoolean("left", lSlideSensor.get());
         SmartDashboard.putBoolean("right", rSlideSensor.get());
