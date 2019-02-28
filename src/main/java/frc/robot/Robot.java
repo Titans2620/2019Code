@@ -31,24 +31,22 @@ public class Robot extends TimedRobot {
     WPI_VictorSPX bottomLeftDrive = new WPI_VictorSPX(2);
     WPI_VictorSPX topRightDrive = new WPI_VictorSPX(3);
     WPI_TalonSRX topLeftDrive = new WPI_TalonSRX(4);
-    WPI_TalonSRX lLift = new WPI_TalonSRX(5);
+    WPI_TalonSRX lift = new WPI_TalonSRX(5);
     WPI_TalonSRX crossSlide = new WPI_TalonSRX(6);
-    WPI_TalonSRX rLift = new WPI_TalonSRX(7);
+    //WPI_TalonSRX rLift = new WPI_TalonSRX(7);
     WPI_TalonSRX lIntake = new WPI_TalonSRX(8);
     WPI_TalonSRX rIntake = new WPI_TalonSRX(9);
     WPI_TalonSRX frontClimb = new WPI_TalonSRX(10);
     WPI_TalonSRX rearClimb = new WPI_TalonSRX(11);
-    WPI_TalonSRX intakeArm = new WPI_TalonSRX(14);
+    WPI_VictorSPX intakeArm = new WPI_VictorSPX(14);
+    WPI_VictorSPX fifthteen = new WPI_VictorSPX(15);
 
-    Spark lLift2 = new Spark(5);
     
-    Spark rLift2 = new Spark(4);
 
     WPI_TalonSRX rRearArmDrive = new WPI_TalonSRX(12);
     WPI_TalonSRX lRearArmDrive = new WPI_TalonSRX(13);
 
-    // Spark rLiftTest = new Spark(0);
-    // Spark lLiftTest = new Spark(1);
+    
 
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
 
@@ -355,24 +353,22 @@ public class Robot extends TimedRobot {
         /**********************************************************
                                     LIFT CODE
             *********************************************************/
-        double LIFT_POWER = 0.6;
+        double LIFT_POWER = 0.7;
         //lLift.setInverted(true);
         if(right.getPOV() == 0) {
-            lLift.set(LIFT_POWER);
-            rLift.set(LIFT_POWER);
-            lLift2.set(LIFT_POWER);
-            rLift2.set(LIFT_POWER);
+            lift.set(LIFT_POWER);
+           
+            
         } else {
             if(right.getPOV() == 180) {
-                lLift.set(-LIFT_POWER);
-                rLift.set(-LIFT_POWER);
-                lLift2.set(-LIFT_POWER);
-                rLift2.set(-LIFT_POWER);
+                lift.set(-LIFT_POWER);
+                
+               
             } else {
-                lLift.set(0.0);
-                rLift.set(0.0);
-                lLift2.set(0.0);
-                rLift2.set(0.0);
+                lift.set(0.0);
+                
+               
+                
             }
         }
 
