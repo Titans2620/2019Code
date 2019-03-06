@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
     /*************************************************************
                         Motor Controllers
     *************************************************************/
-    
+    PIDController PID = new PIDController();
     
     WPI_VictorSPX bottomLeftDrive = new WPI_VictorSPX(2);
     WPI_TalonSRX topLeftDrive = new WPI_TalonSRX(1);
@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
     WPI_VictorSPX intakeArm = new WPI_VictorSPX(14);
     WPI_VictorSPX intake = new WPI_VictorSPX(15);
 
-    
+
 
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
 
@@ -345,9 +345,9 @@ public class Robot extends TimedRobot {
             *********************************************************/
         double LIFT_POWER = 0.4;
         //(UP)
-        if(left.getPOV() == 0 && !topLift.get()) {
+        if(left.getPOV() == 0 && !topLift.get())
             lift.set(1.0);
-        } else {
+        else {
         //(Down)
             if(left.getPOV() == 180 && !bottomLift.get())
                 lift.set(-LIFT_POWER);
@@ -486,19 +486,17 @@ public class Robot extends TimedRobot {
     
 
         // OUTPUTS TO SHUFFLEBOARD/SMARTDASHBOARD, USE FOR TRACKING VALUES
-        SmartDashboard.putNumber("JoyStickXVal", right.getX());
-        SmartDashboard.putNumber("JoyStickYVal", right.getY());
-        SmartDashboard.putBoolean("TestShoot", right.getRawButton(1));
+        // SmartDashboard.putNumber("JoyStickXVal", right.getX());
+        // SmartDashboard.putNumber("JoyStickYVal", right.getY());
         //SmartDashboard.putNumber("Left Servo", rDriveServo.getAngle());
         //SmartDashboard.putNumber("Right Servo", lDriveServo.getAngle());
-        SmartDashboard.putNumber("Slide", crossSlide.get());
-        SmartDashboard.putBoolean("left", lSlideSensor.get());
-        SmartDashboard.putBoolean("right", rSlideSensor.get());
-        SmartDashboard.putNumber("target", slideTarget);
-        SmartDashboard.putNumber("color total", colorTotal);
-        SmartDashboard.putNumber("Arm Encoder", encoderCount);
+        // SmartDashboard.putNumber("Slide", crossSlide.get());
+        // SmartDashboard.putBoolean("left", lSlideSensor.get());
+        // SmartDashboard.putBoolean("right", rSlideSensor.get());
+        // SmartDashboard.putNumber("target", slideTarget);
+        // SmartDashboard.putNumber("color total", colorTotal);
+        // SmartDashboard.putNumber("Arm Encoder", encoderCount);
         //SmartDashboard.putBoolean("Proximity Sensor", cSlideSensor.get());
-        SmartDashboard.putBoolean("High Gear", highGear);
 
         colorSensor.read();
         //SmartDashboard.putNumber("test", colorSensor.status());
