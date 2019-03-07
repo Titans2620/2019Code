@@ -22,8 +22,6 @@ public class Robot extends TimedRobot {
     /*************************************************************
                         Motor Controllers
     *************************************************************/
-    PIDController PID = new PIDController();
-    
     WPI_VictorSPX bottomLeftDrive = new WPI_VictorSPX(2);
     WPI_TalonSRX topLeftDrive = new WPI_TalonSRX(1);
     WPI_VictorSPX topRightDrive = new WPI_VictorSPX(3);
@@ -66,6 +64,9 @@ public class Robot extends TimedRobot {
     /***********************************************************
                             Drive Code
     ************************************************************/
+    
+    
+    
     SpeedControllerGroup rightDrive = new SpeedControllerGroup(bottomRightDrive, topRightDrive, rRearArmDrive);
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(bottomLeftDrive, topLeftDrive, lRearArmDrive);
     DifferentialDrive diffDrive = new DifferentialDrive(leftDrive, rightDrive);
@@ -88,7 +89,10 @@ public class Robot extends TimedRobot {
     boolean highGear = false;
     int armtarget = 1;
     Timer timer = new Timer();
+    Timer timerPID = new Timer();
     int Armarray[] = {10,20,30,40}; 
+
+    double PID;
 
     boolean rearHold;
     boolean frontHold;
@@ -107,7 +111,7 @@ public class Robot extends TimedRobot {
         //m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         //m_chooser.addOption("My Auto", kCustomAuto);
         //SmartDashboard.putData("Auto choices", m_chooser);
-        highGear = true;
+        
         timer.start();
         CameraServer.getInstance().startAutomaticCapture();
 
@@ -157,8 +161,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic()
-    {
-       diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
+    {   
+        if(PID != right.getRawAxis()){
+            if(right.getRawAxis() > 0){
+                timerPID.start();
+                if(timerPID.get() = .1){
+                    PID = 
+                }
+            }
+        }
+        diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
         
         boolean lTrigger = right.getRawButton(1);
         boolean rTrigger = right.getRawButton(1);
