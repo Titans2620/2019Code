@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.ColorSensor;
 import jdk.jfr.Threshold;
+import edu.wpi.first.wpilibj.SendableBase;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
@@ -162,14 +163,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic()
     {   
-        if(PID != right.getRawAxis()){
-            if(right.getRawAxis() > 0){
-                timerPID.start();
-                if(timerPID.get() = .1){
-                    PID = 
-                }
-            }
-        }
+        
+        
+
         diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
         
         boolean lTrigger = right.getRawButton(1);
