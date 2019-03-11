@@ -33,13 +33,16 @@ public class Robot extends TimedRobot {
     WPI_TalonSRX lRearArmDrive = new WPI_TalonSRX(8);
     WPI_TalonSRX rearClimb = new WPI_TalonSRX(9);
     WPI_TalonSRX rearClimb2 = new WPI_TalonSRX(10);
-    WPI_TalonSRX lift = new WPI_TalonSRX(11);
+    //WPI_TalonSRX lift = new WPI_TalonSRX(11);
     // WPI_TalonSRX rLift = new WPI_TalonSRX(12);
     WPI_TalonSRX crossSlide = new WPI_TalonSRX(13);
     WPI_VictorSPX intakeArm = new WPI_VictorSPX(14);
-    WPI_VictorSPX intake = new WPI_VictorSPX(15);
+   // WPI_VictorSPX intake = new WPI_VictorSPX(15);
 
-
+    Spark tLeftDrive = new Spark(0);
+    Spark tRightDrive = new Spark(1);
+    Spark lift = new Spark(2);
+    Spark intake = new Spark(3);
 
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
 
@@ -71,10 +74,10 @@ public class Robot extends TimedRobot {
     SpeedControllerGroup rightDrive = new SpeedControllerGroup(bottomRightDrive, topRightDrive, rRearArmDrive);
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(bottomLeftDrive, topLeftDrive, lRearArmDrive);
     DifferentialDrive diffDrive = new DifferentialDrive(leftDrive, rightDrive);
-    
-
+    DifferentialDrive tDiffDrive = new DifferentialDrive(tLeftDrive, tRightDrive);
+    Joystick left = new Joystick(0);
     Joystick right = new Joystick(1);
-    JoySitck left = new Joystick(0);
+   
     /***********************************************************
                       ADDITIONAL VARIABLES
     ***********************************************************/
@@ -167,19 +170,20 @@ public class Robot extends TimedRobot {
         
 
         diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
+        tDiffDrive.arcadeDrive(right.getRawAxis(1) * -1, right.getRawAxis(0));
         
         boolean lTrigger = right.getRawButton(1);
         boolean rTrigger = right.getRawButton(1);
-        SmartDashboard.putBoolean("trigger", trigger);
+        SmartDashboard.putBoolean("trigger", lTrigger);
         boolean rBottomFace = right.getRawButton(2);
         boolean lBottomFace = right.getRawButton(2);
-        SmartDashboard.putBoolean("bottomFace", bottomFace);
+        SmartDashboard.putBoolean("bottomFace", lBottomFace);
         boolean rLeftFace = right.getRawButton(3);
         boolean lLeftFace = right.getRawButton(3);
-        SmartDashboard.putBoolean("leftFace", leftFace);
+        SmartDashboard.putBoolean("leftFace", lLeftFace);
         boolean rRightFace = right.getRawButton(4);
         boolean lRightFace = right.getRawButton(4);
-        SmartDashboard.putBoolean("rightFace", rightFace);
+        SmartDashboard.putBoolean("rightFace", lRightFace);
         //RIGHT(LEFT SIDE)
         boolean RL1 = right.getRawButton(5);
         boolean RL2 = right.getRawButton(6);
