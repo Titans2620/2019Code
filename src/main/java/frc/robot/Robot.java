@@ -14,21 +14,15 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.ColorSensor;
 import jdk.jfr.Threshold;
+import edu.wpi.first.wpilibj.SendableBase;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
 
 public class Robot extends TimedRobot {
-    //private static final String kDefaultAuto = "Default";
-    //private static final String kCustomAuto = "My Auto";
-    //private String m_autoSelected;
-    //private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
     /*************************************************************
                         Motor Controllers
     *************************************************************/
-    
-    
     WPI_VictorSPX bottomLeftDrive = new WPI_VictorSPX(2);
     WPI_TalonSRX topLeftDrive = new WPI_TalonSRX(1);
     WPI_VictorSPX topRightDrive = new WPI_VictorSPX(3);
@@ -39,13 +33,16 @@ public class Robot extends TimedRobot {
     WPI_TalonSRX lRearArmDrive = new WPI_TalonSRX(8);
     WPI_TalonSRX rearClimb = new WPI_TalonSRX(9);
     WPI_TalonSRX rearClimb2 = new WPI_TalonSRX(10);
-    WPI_TalonSRX lift = new WPI_TalonSRX(11);
+    //WPI_TalonSRX lift = new WPI_TalonSRX(11);
     // WPI_TalonSRX rLift = new WPI_TalonSRX(12);
     WPI_TalonSRX crossSlide = new WPI_TalonSRX(13);
     WPI_VictorSPX intakeArm = new WPI_VictorSPX(14);
-    WPI_VictorSPX intake = new WPI_VictorSPX(15);
+   // WPI_VictorSPX intake = new WPI_VictorSPX(15);
 
-    
+    Spark tLeftDrive = new Spark(0);
+    Spark tRightDrive = new Spark(1);
+    Spark lift = new Spark(2);
+    Spark intake = new Spark(3);
 
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
 
@@ -71,12 +68,16 @@ public class Robot extends TimedRobot {
     /***********************************************************
                             Drive Code
     ************************************************************/
+    
+    
+    
     SpeedControllerGroup rightDrive = new SpeedControllerGroup(bottomRightDrive, topRightDrive, rRearArmDrive);
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(bottomLeftDrive, topLeftDrive, lRearArmDrive);
     DifferentialDrive diffDrive = new DifferentialDrive(leftDrive, rightDrive);
-    
-
+    DifferentialDrive tDiffDrive = new DifferentialDrive(tLeftDrive, tRightDrive);
+    Joystick left = new Joystick(0);
     Joystick right = new Joystick(1);
+   
     /***********************************************************
                       ADDITIONAL VARIABLES
     ***********************************************************/
@@ -92,7 +93,10 @@ public class Robot extends TimedRobot {
     boolean highGear = false;
     int armtarget = 1;
     Timer timer = new Timer();
+    Timer timerPID = new Timer();
     int Armarray[] = {10,20,30,40}; 
+
+    double PID;
 
     boolean rearHold;
     boolean frontHold;
@@ -111,7 +115,7 @@ public class Robot extends TimedRobot {
         //m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         //m_chooser.addOption("My Auto", kCustomAuto);
         //SmartDashboard.putData("Auto choices", m_chooser);
-        highGear = true;
+        
         timer.start();
         CameraServer.getInstance().startAutomaticCapture();
 
@@ -161,31 +165,54 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic()
-    {
-       diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
-
-        boolean trigger = right.getRawButton(1);
-        SmartDashboard.putBoolean("trigger", trigger);
-        boolean bottomFace = right.getRawButton(2);
-        SmartDashboard.putBoolean("bottomFace", bottomFace);
-        boolean leftFace = right.getRawButton(3);
-        SmartDashboard.putBoolean("leftFace", leftFace);
-        boolean rightFace = right.getRawButton(4);
-        SmartDashboard.putBoolean("rightFace", rightFace);
-
-        boolean L1 = right.getRawButton(5);
-        boolean L2 = right.getRawButton(6);
-        boolean L3 = right.getRawButton(7);
-        boolean L6 = right.getRawButton(8);
-        boolean L5 = right.getRawButton(9);
-        boolean L4 = right.getRawButton(10);
+    {   
         
-        boolean R1 = right.getRawButton(13);
-        boolean R2 = right.getRawButton(12);
-        boolean R3 = right.getRawButton(11);
-        boolean R4 = right.getRawButton(14);
-        boolean R5 = right.getRawButton(15);
-        boolean R6 = right.getRawButton(16);
+        
+
+        diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
+        tDiffDrive.arcadeDrive(right.getRawAxis(1) * -1, right.getRawAxis(0));
+        
+        boolean lTrigger = right.getRawButton(1);
+        boolean rTrigger = right.getRawButton(1);
+        SmartDashboard.putBoolean("trigger", lTrigger);
+        boolean rBottomFace = right.getRawButton(2);
+        boolean lBottomFace = right.getRawButton(2);
+        SmartDashboard.putBoolean("bottomFace", lBottomFace);
+        boolean rLeftFace = right.getRawButton(3);
+        boolean lLeftFace = right.getRawButton(3);
+        SmartDashboard.putBoolean("leftFace", lLeftFace);
+        boolean rRightFace = right.getRawButton(4);
+        boolean lRightFace = right.getRawButton(4);
+        SmartDashboard.putBoolean("rightFace", lRightFace);
+        //RIGHT(LEFT SIDE)
+        boolean RL1 = right.getRawButton(5);
+        boolean RL2 = right.getRawButton(6);
+        boolean RL3 = right.getRawButton(7);
+        boolean RL6 = right.getRawButton(8);
+        boolean RL5 = right.getRawButton(9);
+        boolean RL4 = right.getRawButton(10);
+        //RIGHT(RIGHT SIDE)
+        boolean RR1 = right.getRawButton(13);
+        boolean RR2 = right.getRawButton(12);
+        boolean RR3 = right.getRawButton(11);
+        boolean RR4 = right.getRawButton(14);
+        boolean RR5 = right.getRawButton(15);
+        boolean RR6 = right.getRawButton(16);
+
+        //LEFT(LEFT SIDE)
+        boolean LL1 = right.getRawButton(5);
+        boolean LL2 = right.getRawButton(6);
+        boolean LL3 = right.getRawButton(7);
+        boolean LL6 = right.getRawButton(8);
+        boolean LL5 = right.getRawButton(9);
+        boolean LL4 = right.getRawButton(10);
+        //LEFT(RIGHT SIDE)
+        boolean LR1 = right.getRawButton(13);
+        boolean LR2 = right.getRawButton(12);
+        boolean LR3 = right.getRawButton(11);
+        boolean LR4 = right.getRawButton(14);
+        boolean LR5 = right.getRawButton(15);
+        boolean LR6 = right.getRawButton(16);
 
         SmartDashboard.putBoolean("ArmZero", zeroArm.get());
         SmartDashboard.putBoolean("Ball Switch", ballSwitch.get());
@@ -197,20 +224,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("rPOV", rPOV);
         int colorTotal = colorSensor.red + colorSensor.green + colorSensor.blue;
 
-        if(L1 && !highGear && timer.get() > .5 ){
-            timer.reset();
-            highGear = true;
-            timer.start();
-        } else {
-            if(highGear && L1 && timer.get() > .5) {
-                timer.reset();
-                highGear = false;
-                timer.start();
-            }
-        }
-        
-        
-       
         
     
         /*********************************************************
@@ -283,13 +296,15 @@ public class Robot extends TimedRobot {
         double downPressure = .2;
 
 
-        if(L2){
+        //Climb (Front)
+
+        if(RL2){
             frontClimb.set(-.5);
             frontClimb2.set(-.5);
             frontHold = false;
           }       
         else {
-            if(L5 && !frontClimbStop.get()){
+            if(RL5 && !frontClimbStop.get()){
                 frontClimb.set(.8);
                 frontClimb2.set(.8);
                 frontHold = true;
@@ -309,13 +324,15 @@ public class Robot extends TimedRobot {
             }
         }
         
-        if(L3){
+        //Climb (Rear)
+
+        if(RL3){
             rearClimb.set(.5);
             rearClimb2.set(.5);
             rearHold = false;
           }       
         else {
-            if(L6 && !rearClimbStop.get()){
+            if(RL6 && !rearClimbStop.get()){
                 rearClimb.set(-.8);
                 rearClimb2.set(-.8);
                 rearHold = true;
@@ -335,34 +352,16 @@ public class Robot extends TimedRobot {
             }
         }
 
-        
-
-
-        //window
-
-        // if(R11) {
-        //     rRearArmDrive.set(1);
-        //     lRearArmDrive.set(1);
-        // } else {
-        //     if(R16) {
-        //         rRearArmDrive.set(-1);
-        //         lRearArmDrive.set(-1);
-        //     } else {
-        //         rRearArmDrive.set(0);
-        //         lRearArmDrive.set(0);
-        //     }
-        // }
-
-
-
         /**********************************************************
                                     LIFT CODE
             *********************************************************/
         double LIFT_POWER = 0.4;
-        if(right.getPOV() == 0 && !topLift.get()) {
+        //(UP)
+        if(left.getPOV() == 0 && !topLift.get())
             lift.set(1.0);
-        } else {
-            if(right.getPOV() == 180 && !bottomLift.get())
+        else {
+        //(Down)
+            if(left.getPOV() == 180 && !bottomLift.get())
                 lift.set(-LIFT_POWER);
             else 
                 lift.set(0.0);
@@ -370,13 +369,13 @@ public class Robot extends TimedRobot {
 
        ////////Intake////////////////
 
-        if(trigger)
+        if(lTrigger)//(IN)
             if(!ballSwitch.get())
                 intake.set(0.7);
             else
                 intake.set(0);
         else {
-            if(bottomFace)
+            if(lBottomFace)//(OUT)
                 intake.set(-1);
             else if (ballSwitch.get())
                 intake.set(0.0);
@@ -384,33 +383,35 @@ public class Robot extends TimedRobot {
                 intake.set(0);
         }
 
+
+        //Speed
         double ARM_UP_SPEED = 0.8;
         double ARM_DOWN_SPEED = -0.5;
         double ARM_HOLD_POWER = 0.1;
         int DEAD_ZONE = 25;
-
+        //Positions
         int SLOWER_TO_HOME = -560;
         int WALL_POS = -560;
         int BALL_PICKUP_POS = -1220;
         int FLOOR_POS = -2100;
 
         //Home Position
-        if(R1)
+        if(LR1)
             armPos = 0;        
         // Wall Position
-        if(R2)
+        if(LR2)
             armPos = 1;
         // Ball Pickup Position
-        if(R4)
+        if(LR4)
             armPos = 2;
         // Floor Position
-        if(R5)
+        if(LR5)
             armPos = 3;
         // Manual Override Up
-        if(R3)
+        if(LR3)
             armPos = 4;
         // Manual Override Down
-        if(R6)
+        if(LR6)
             armPos = 5;
 
         // Automatically bring ball in
@@ -420,133 +421,111 @@ public class Robot extends TimedRobot {
         encoderCount = armEnc.getRaw();
         // double PERC_TO_TOP = (encoderCount / FLOOR_POS);
 
-        if(zeroArm.get()) {
+        if(zeroArm.get())
             armEnc.reset();
-        }
+        
 
         switch(armPos) {
-            case 0:
+            case 0://(HOME)
                 if(!zeroArm.get()) {
-                    if (encoderCount > SLOWER_TO_HOME) {
+                    if (encoderCount > SLOWER_TO_HOME) 
                         intakeArm.set(ARM_UP_SPEED * 0.5);
-                    } else {
+                    else 
                         intakeArm.set(ARM_UP_SPEED);
-                    }
-                } else {
+                } else 
                     intakeArm.set(0);
-                }
                 break;
-            case 1:
+            case 1://(WALL)
                 if(encoderCount < (WALL_POS - DEAD_ZONE))
                     intakeArm.set(ARM_UP_SPEED);
                 else {
-                    if(encoderCount > (WALL_POS + DEAD_ZONE)) {
+                    if(encoderCount > (WALL_POS + DEAD_ZONE))
                         intakeArm.set(ARM_DOWN_SPEED);
-                    } else{
+                    else
                         intakeArm.set(ARM_HOLD_POWER);
-                    }
                 }
                 break;
-            case 2:
+            case 2://(BALL)
                 if(encoderCount < (BALL_PICKUP_POS - DEAD_ZONE))
                     intakeArm.set(ARM_UP_SPEED);
                 else {
                     if(encoderCount > (BALL_PICKUP_POS + DEAD_ZONE)) {
                         intakeArm.set(ARM_DOWN_SPEED);
                         intake.set(1);
-                    } else{
+                    } else
                         intakeArm.set(ARM_HOLD_POWER);
-                    }
                 }
                 break;
-            case 3:
+            case 3://(FLOOR)
                 if(encoderCount < (FLOOR_POS - DEAD_ZONE))
                     intakeArm.set(ARM_UP_SPEED);
                 else {
-                    if(encoderCount > (FLOOR_POS + DEAD_ZONE)) {
+                    if(encoderCount > (FLOOR_POS + DEAD_ZONE))
                         intakeArm.set(ARM_DOWN_SPEED);
-                    } else{
+                    else
                         intakeArm.set(ARM_HOLD_POWER);
-                    }
                 }
                 break;
-            case 4:
-                if(zeroArm.get()) {
+            case 4://MANUAL(UP)
+                if(zeroArm.get())
                     intakeArm.set(0.0);
-                } else {
-                    if(R3) {
+                else {
+                    if(RR3)
                         intakeArm.set(ARM_UP_SPEED);
-                    } else {
+                    else
                         intakeArm.set(ARM_HOLD_POWER);
-                    }
+                
                 }
                 break;
-            case 5:
-                if(encoderCount < (FLOOR_POS - DEAD_ZONE)) {
+            case 5://MANUAL(DOWN)
+                if(encoderCount < (FLOOR_POS - DEAD_ZONE))
                     intakeArm.set(0.0);
-                } else {
-                    if(R6) {
+                else {
+                    if(RR6) 
                         intakeArm.set(ARM_DOWN_SPEED);
-                    } else {
+                    else
                         intakeArm.set(ARM_HOLD_POWER);
-                    }
                 }
                 break;
             }
       
     
         //run talon 10 until no buttons are pressed or a limit switch(DIO4)is pressed
-        //two buttons are used R3 and L3, R3 moves it forward, L3 moves it backward
+        //two buttons are used RR3 and RL3, RR3 moves it forward, RL3 moves it backward
 
         //4063counts per revolution/18.5 gear down = 1 revolution
         //208.79 counts = 1 degree
     
 
         // OUTPUTS TO SHUFFLEBOARD/SMARTDASHBOARD, USE FOR TRACKING VALUES
-        SmartDashboard.putNumber("JoyStickXVal", right.getX());
-        SmartDashboard.putNumber("JoyStickYVal", right.getY());
-        SmartDashboard.putBoolean("TestShoot", right.getRawButton(1));
+        // SmartDashboard.putNumber("JoyStickXVal", right.getX());
+        // SmartDashboard.putNumber("JoyStickYVal", right.getY());
         //SmartDashboard.putNumber("Left Servo", rDriveServo.getAngle());
         //SmartDashboard.putNumber("Right Servo", lDriveServo.getAngle());
-        SmartDashboard.putNumber("Slide", crossSlide.get());
-        SmartDashboard.putBoolean("left", lSlideSensor.get());
-        SmartDashboard.putBoolean("right", rSlideSensor.get());
-        SmartDashboard.putNumber("target", slideTarget);
-        SmartDashboard.putNumber("color total", colorTotal);
-        SmartDashboard.putNumber("Arm Encoder", encoderCount);
+        // SmartDashboard.putNumber("Slide", crossSlide.get());
+        // SmartDashboard.putBoolean("left", lSlideSensor.get());
+        // SmartDashboard.putBoolean("right", rSlideSensor.get());
+        // SmartDashboard.putNumber("target", slideTarget);
+        // SmartDashboard.putNumber("color total", colorTotal);
+        // SmartDashboard.putNumber("Arm Encoder", encoderCount);
         //SmartDashboard.putBoolean("Proximity Sensor", cSlideSensor.get());
-        SmartDashboard.putBoolean("High Gear", highGear);
 
         colorSensor.read();
         //SmartDashboard.putNumber("test", colorSensor.status());
-        SmartDashboard.putNumber("red", colorSensor.red);
-        SmartDashboard.putNumber("green", colorSensor.green);
-        SmartDashboard.putNumber("blue", colorSensor.blue);
-        SmartDashboard.putNumber("prox", colorSensor.prox);
+        // SmartDashboard.putNumber("red", colorSensor.red);
+        // SmartDashboard.putNumber("green", colorSensor.green);
+        // SmartDashboard.putNumber("blue", colorSensor.blue);
+        // SmartDashboard.putNumber("prox", colorSensor.prox);
   }
-  
-
-  /***********************************************************
-                      Test Code
-  ***********************************************************/
-
-  //---------------------------------------------------------\\
-  @Override
-  public void testPeriodic() {
-
-  }
-
   
   /**********************************************************
                       User Functions
   ***********************************************************/
   boolean checkColor(double threshold){ //returns if white tape if found, recommended threshold is 10
-    if(colorSensor.red > threshold && colorSensor.green > threshold && colorSensor.blue > threshold){
-      return true;
-    }
-    else{
+    if(colorSensor.red > threshold && colorSensor.green > threshold && colorSensor.blue > threshold)
+      return true;   
+    else
       return false;
-    }
   }
 
 }
