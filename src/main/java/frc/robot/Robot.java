@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
     WPI_VictorSPX intakeArm = new WPI_VictorSPX(14);
     WPI_VictorSPX intake = new WPI_VictorSPX(15);
 
-    Spark testLift = new Spark(1);
+    
 
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
 
@@ -75,8 +75,6 @@ public class Robot extends TimedRobot {
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(bottomLeftDrive, topLeftDrive, lRearArmDrive);
     DifferentialDrive diffDrive = new DifferentialDrive(leftDrive, rightDrive);
     
-
-
 
     Joystick right = new Joystick(1);
     /***********************************************************
@@ -368,15 +366,6 @@ public class Robot extends TimedRobot {
                 lift.set(-LIFT_POWER);
             else 
                 lift.set(0.0);
-        }
-        
-        if(right.getPOV() == 0) {
-            testLift.set(1.0);
-        } else {
-            if(right.getPOV() == 180)
-                testLift.set(-LIFT_POWER);
-            else 
-                testLift.set(0.0);
         }
 
        ////////Intake////////////////
