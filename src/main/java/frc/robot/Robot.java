@@ -175,17 +175,17 @@ public class Robot extends TimedRobot {
         diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
         tDiffDrive.arcadeDrive(right.getRawAxis(1) * -1, right.getRawAxis(0));
         
-        boolean lTrigger = right.getRawButton(1);
+        boolean lTrigger = left.getRawButton(1);
         boolean rTrigger = right.getRawButton(1);
         SmartDashboard.putBoolean("trigger", lTrigger);
         boolean rBottomFace = right.getRawButton(2);
-        boolean lBottomFace = right.getRawButton(2);
+        boolean lBottomFace = left.getRawButton(2);
         SmartDashboard.putBoolean("bottomFace", lBottomFace);
         boolean rLeftFace = right.getRawButton(3);
-        boolean lLeftFace = right.getRawButton(3);
+        boolean lLeftFace = left.getRawButton(3);
         SmartDashboard.putBoolean("leftFace", lLeftFace);
         boolean rRightFace = right.getRawButton(4);
-        boolean lRightFace = right.getRawButton(4);
+        boolean lRightFace = left.getRawButton(4);
         SmartDashboard.putBoolean("rightFace", lRightFace);
         //RIGHT(LEFT SIDE)
         boolean RL1 = right.getRawButton(5);
@@ -203,23 +203,23 @@ public class Robot extends TimedRobot {
         boolean RR6 = right.getRawButton(16);
 
         //LEFT(LEFT SIDE)
-        boolean LL1 = right.getRawButton(5);
-        boolean LL2 = right.getRawButton(6);
-        boolean LL3 = right.getRawButton(7);
-        boolean LL6 = right.getRawButton(8);
-        boolean LL5 = right.getRawButton(9);
-        boolean LL4 = right.getRawButton(10);
+        boolean LL1 = left.getRawButton(5);
+        boolean LL2 = left.getRawButton(6);
+        boolean LL3 = left.getRawButton(7);
+        boolean LL6 = left.getRawButton(8);
+        boolean LL5 = left.getRawButton(9);
+        boolean LL4 = left.getRawButton(10);
         //LEFT(RIGHT SIDE)
-        boolean LR1 = right.getRawButton(13);
-        boolean LR2 = right.getRawButton(12);
-        boolean LR3 = right.getRawButton(11);
-        boolean LR4 = right.getRawButton(14);
-        boolean LR5 = right.getRawButton(15);
-        boolean LR6 = right.getRawButton(16);
+        boolean LR1 = left.getRawButton(13);
+        boolean LR2 = left.getRawButton(12);
+        boolean LR3 = left.getRawButton(11);
+        boolean LR4 = left.getRawButton(14);
+        boolean LR5 = left.getRawButton(15);
+        boolean LR6 = left.getRawButton(16);
 
         SmartDashboard.putBoolean("ArmZero", zeroArm.get());
         SmartDashboard.putBoolean("Ball Switch", ballSwitch.get());
-
+        SmartDashboard.putNumber("Ender Coder", encoderCount);
         SmartDashboard.putBoolean("frontClimbStop", frontClimbStop.get());
         SmartDashboard.putBoolean("rearClimbStop", rearClimbStop.get());
 
@@ -391,7 +391,7 @@ public class Robot extends TimedRobot {
         //Speed
         double ARM_UP_SPEED = 0.8;
         double ARM_DOWN_SPEED = -0.5;
-        double ARM_HOLD_POWER = 0.1;
+        double ARM_HOLD_POWER = 0.0;
         int DEAD_ZONE = 25;
         //Positions
         int SLOWER_TO_HOME = -560;
@@ -422,7 +422,7 @@ public class Robot extends TimedRobot {
         if(ballSwitch.get() && armPos == 2)
             armPos = 0;
     
-        encoderCount = armEnc.getRaw();
+        encoderCount = armEnc.getRaw() * -1;
         // double PERC_TO_TOP = (encoderCount / FLOOR_POS);
 
         if(zeroArm.get())
