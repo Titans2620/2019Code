@@ -36,13 +36,14 @@ public class Robot extends TimedRobot {
     //WPI_TalonSRX lift = new WPI_TalonSRX(11);
     // WPI_TalonSRX rLift = new WPI_TalonSRX(12);
     WPI_TalonSRX crossSlide = new WPI_TalonSRX(13);
-    WPI_VictorSPX intakeArm = new WPI_VictorSPX(14);
+    // WPI_VictorSPX intakeArm = new WPI_VictorSPX(14);
    // WPI_VictorSPX intake = new WPI_VictorSPX(15);
 
     Spark tLeftDrive = new Spark(0);
     Spark tRightDrive = new Spark(1);
-    Spark lift = new Spark(2);
-    Spark intake = new Spark(3);
+    Spark intake = new Spark(2);
+    Spark lift = new Spark(3);
+    WPI_TalonSRX intakeArm = new WPI_TalonSRX(14);
 
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
 
@@ -121,6 +122,8 @@ public class Robot extends TimedRobot {
 
         
 
+
+        
         topRightDrive.setInverted(true);
         bottomRightDrive.setInverted(true);
         lRearArmDrive.setInverted(true);
@@ -355,14 +358,15 @@ public class Robot extends TimedRobot {
         /**********************************************************
                                     LIFT CODE
             *********************************************************/
-        double LIFT_POWER = 0.4;
+            
+        double LIFT_POWER = 0.85;
         //(UP)
-        if(left.getPOV() == 0 && !topLift.get())
-            lift.set(1.0);
+        if(left.getPOV() == 0)// && !topLift.get())
+            lift.set(LIFT_POWER);
         else {
         //(Down)
-            if(left.getPOV() == 180 && !bottomLift.get())
-                lift.set(-LIFT_POWER);
+            if(left.getPOV() == 180)// && !bottomLift.get())
+                lift.set(-.35);
             else 
                 lift.set(0.0);
         }
@@ -370,15 +374,15 @@ public class Robot extends TimedRobot {
        ////////Intake////////////////
 
         if(lTrigger)//(IN)
-            if(!ballSwitch.get())
+           // if(!ballSwitch.get())
                 intake.set(0.7);
-            else
-                intake.set(0);
+            //else
+               // intake.set(0);
         else {
             if(lBottomFace)//(OUT)
                 intake.set(-1);
-            else if (ballSwitch.get())
-                intake.set(0.0);
+           // else if (ballSwitch.get())
+                //intake.set(0.0);
             else
                 intake.set(0);
         }
@@ -470,7 +474,7 @@ public class Robot extends TimedRobot {
                 if(zeroArm.get())
                     intakeArm.set(0.0);
                 else {
-                    if(RR3)
+                    if(LR3)
                         intakeArm.set(ARM_UP_SPEED);
                     else
                         intakeArm.set(ARM_HOLD_POWER);
@@ -481,7 +485,7 @@ public class Robot extends TimedRobot {
                 if(encoderCount < (FLOOR_POS - DEAD_ZONE))
                     intakeArm.set(0.0);
                 else {
-                    if(RR6) 
+                    if(LR6) 
                         intakeArm.set(ARM_DOWN_SPEED);
                     else
                         intakeArm.set(ARM_HOLD_POWER);
