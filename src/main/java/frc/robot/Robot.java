@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
         
 
         diffDrive.arcadeDrive(right.getRawAxis(1), right.getRawAxis(0));
-        tDiffDrive.arcadeDrive(right.getRawAxis(1) * -1, right.getRawAxis(0));
+        tDiffDrive.arcadeDrive(right.getRawAxis(1) * -1, right.getRawAxis(0) * .80 );
         
         boolean lTrigger = left.getRawButton(1);
         boolean rTrigger = right.getRawButton(1);
@@ -221,7 +221,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Ball Switch", ballSwitch.get());
         SmartDashboard.putNumber("Ender Coder", encoderCount);
         SmartDashboard.putBoolean("frontClimbStop", frontClimbStop.get());
-        SmartDashboard.putBoolean("rearClimbStop", rearClimbStop.get());
+        SmartDashboard.putBoolean("bottomstopp", bottomLift.get());
 
         int rPOV = right.getPOV();
         SmartDashboard.putNumber("rPOV", rPOV);
@@ -365,7 +365,7 @@ public class Robot extends TimedRobot {
             lift.set(LIFT_POWER);
         else {
         //(Down)
-            if(left.getPOV() == 180)// && !bottomLift.get())
+            if(left.getPOV() == 180 && !bottomLift.get())
                 lift.set(-.35);
             else 
                 lift.set(0.0);
@@ -395,7 +395,7 @@ public class Robot extends TimedRobot {
         int DEAD_ZONE = 25;
         //Positions
         int SLOWER_TO_HOME = -560;
-        int WALL_POS = -560;
+        int WALL_POS = -150;
         int BALL_PICKUP_POS = -1220;
         int FLOOR_POS = -2100;
 
