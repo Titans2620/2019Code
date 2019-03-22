@@ -26,6 +26,7 @@ public class Robot extends TimedRobot {
     WPI_VictorSPX bottomLeftDrive = new WPI_VictorSPX(2);
     WPI_TalonSRX topLeftDrive = new WPI_TalonSRX(1);
     WPI_VictorSPX topRightDrive = new WPI_VictorSPX(3);
+<<<<<<< HEAD
     WPI_TalonSRX bottomRightDrive = new WPI_TalonSRX(4);
     WPI_TalonSRX frontClimb2 = new WPI_TalonSRX(5);
     WPI_TalonSRX frontClimb = new WPI_TalonSRX(6);
@@ -44,6 +45,27 @@ public class Robot extends TimedRobot {
     Spark intake = new Spark(2);
     Spark lift = new Spark(3);
     WPI_TalonSRX intakeArm = new WPI_TalonSRX(14);
+=======
+    WPI_TalonSRX topLeftDrive = new WPI_TalonSRX(4);
+    WPI_TalonSRX lLift = new WPI_TalonSRX(5);
+    WPI_TalonSRX crossSlide = new WPI_TalonSRX(6);
+    WPI_TalonSRX rLift = new WPI_TalonSRX(7);
+    WPI_TalonSRX lIntake = new WPI_TalonSRX(8);
+    WPI_TalonSRX rIntake = new WPI_TalonSRX(9);
+    WPI_TalonSRX frontClimb = new WPI_TalonSRX(10);
+    WPI_TalonSRX rearClimb = new WPI_TalonSRX(11);
+    WPI_TalonSRX intakeArm = new WPI_TalonSRX(14);
+
+    Spark lLift2 = new Spark(5);
+    
+    Spark rLift2 = new Spark(4);
+
+    WPI_TalonSRX rRearArmDrive = new WPI_TalonSRX(12);
+    WPI_TalonSRX lRearArmDrive = new WPI_TalonSRX(13);
+
+    // Spark rLiftTest = new Spark(0);
+    // Spark lLiftTest = new Spark(1);
+>>>>>>> parent of a6ad3dd... ws
 
     ColorSensor colorSensor = new ColorSensor(I2C.Port.kOnboard);
 
@@ -358,6 +380,7 @@ public class Robot extends TimedRobot {
         /**********************************************************
                                     LIFT CODE
             *********************************************************/
+<<<<<<< HEAD
             
         double LIFT_POWER = 0.85;
         //(UP)
@@ -369,6 +392,27 @@ public class Robot extends TimedRobot {
                 lift.set(-.35);
             else 
                 lift.set(0.0);
+=======
+        double LIFT_POWER = 0.6;
+        //lLift.setInverted(true);
+        if(right.getPOV() == 0) {
+            lLift.set(LIFT_POWER);
+            rLift.set(LIFT_POWER);
+            lLift2.set(LIFT_POWER);
+            rLift2.set(LIFT_POWER);
+        } else {
+            if(right.getPOV() == 180) {
+                lLift.set(-LIFT_POWER);
+                rLift.set(-LIFT_POWER);
+                lLift2.set(-LIFT_POWER);
+                rLift2.set(-LIFT_POWER);
+            } else {
+                lLift.set(0.0);
+                rLift.set(0.0);
+                lLift2.set(0.0);
+                rLift2.set(0.0);
+            }
+>>>>>>> parent of a6ad3dd... ws
         }
 
        ////////Intake////////////////
